@@ -214,7 +214,7 @@ I worked through the process creation events (Event ID 1), pivoting on parent pr
 
 ---
 
-## Attack chains (MITRE ATT&CK, suggested, verify)
+## Attack chains (MITRE ATT&CK)
 
 | Room | Behaviour | Technique |
 |---|---|---|
