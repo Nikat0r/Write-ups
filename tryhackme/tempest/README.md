@@ -194,7 +194,7 @@ With SYSTEM access, the attacker created two accounts. Process creation events s
 
 ## Attack chain
 
-| Stage | Behaviour | MITRE ATT&CK (suggested, verify) |
+| Stage | Behaviour | MITRE ATT&CK |
 |---|---|---|
 | Initial access | Malicious `.doc` downloaded via Chrome | T1566 Phishing |
 | Execution | Word spawns `msdt.exe` via the `ms-msdt:` handler | T1203 Exploitation for Client Execution |
