@@ -33,7 +33,7 @@ A search for Office documents in the Splunk index found one that stood out, and 
 
 **Version 1.** I added the commands from the report to the command-line matches and moved the Office telemetry agent from a selection to a filter. It failed several red-team tests.
 
-![Failed red-team tests for the first version](images/detectmare-06.png)
+![Failed red-team tests for the first version](images/detectmare-03.png)
 
 **Final version.** Instead of one list of strings, I wrote a selection per Office application (Word, Excel, PowerPoint and Outlook), each paired with the child process behavior it is associated with. The environment document listed a legitimate finance automation that runs a batch file from Excel, which I excluded. The last bypass renamed a malicious payload to the trusted script's name, so a filter on the name or path was not enough. To fix it, I looked up the real script's events in Splunk and saw its parent process command line: Excel opening an internal template. The filter now requires both the script path and that parent command line.
 
@@ -43,7 +43,7 @@ A search for Office documents in the Splunk index found one that stood out, and 
 
 **ATT&CK:** T1218, Signed Binary Proxy Execution.
 
-![PR 2 in the detection-as-code app](images/detectmare-08.png)
+![PR 2 in the detection-as-code app](images/detectmare-04.png)
 
 The report's sample commands used `.dat` files in user-writable folders. Those commands never appeared in the Splunk data, and my first rule, built from them (a path, a list of extensions and a blanket `.dll` exclusion), matched nothing. I lost time looking for events that were not in the logs.
 
@@ -66,15 +66,15 @@ The true positive was a different event from the report's samples: a proxy binar
 
 **ATT&CK:** T1003.001, LSASS Memory.
 
-![PR 3 in the detection-as-code app](images/detectmare-12.png)
+![PR 3 in the detection-as-code app](images/detectmare-5.png)
 
 The starting rule matched LSASS access through one dumping method. It scored 100% on the true and false positives but failed three bypass tests.
 
-![The failed bypass tests](images/detectmare-16.png)
+![The failed bypass tests](images/detectmare-6.png)
 
 The bypasses used other dumper modules and call traces from unknown memory. The fixes were adding the other debug-help module, matching an unknown frame in the call trace (code that is not backed by a normal module), tightening the error-reporting filter to its full path, and adding a filter for the institute's privileged-access agent. All tests then passed.
 
-![The event showing the LSASS dump](images/detectmare-15.png)
+![The event showing the LSASS dump](images/detectmare-7.png)
 
 **Takeaway:** a rule on one tool's artifact is the easiest to bypass. The unknown call trace catches injected or unsigned callers regardless of the tool.
 
@@ -82,15 +82,15 @@ The bypasses used other dumper modules and call traces from unknown memory. The 
 
 **ATT&CK:** T1550.002, Pass the Hash.
 
-![PR 4 in the detection-as-code app](images/detectmare-18.png)
+![PR 4 in the detection-as-code app](images/detectmare-8.png)
 
 A network logon with NTLM and a key length of zero is the fingerprint. On its own it scored 1 true positive, 7 false positives and 1 false negative, because other benign NTLM logons share it.
 
-![The pass-the-hash logon in Splunk](images/detectmare-21.png)
+![The pass-the-hash logon in Splunk](images/detectmare-9.png)
 
 My first idea was a correlation rule: a logon followed by a remote service installation on the same host. The grader would not score it, because it evaluates single events and does not run correlations. So I went back to an atomic rule that matches either event, with filters for the legitimate logons (a legacy workstation and a service account) in the environment document. One variant using a service that launches a command interpreter still failed.
 
-![The failed test for the service variant](images/detectmare-23.png)
+![The failed test for the service variant](images/detectmare-10.png)
 
 Adding a selection for that service pattern fixed it, and the PR passed.
 
@@ -100,11 +100,11 @@ Adding a selection for that service pattern fixed it, and the PR passed.
 
 **ATT&CK:** T1560.001, Archive via Utility.
 
-![PR 5 in the detection-as-code app](images/detectmare-25.png)
+![PR 5 in the detection-as-code app](images/detectmare-11.png)
 
 I started with the two archivers' image names and a filter for the backup routine, then added the CAD file extensions. That passed the environment check but failed the bypass tests, which used a renamed archiver and PowerShell.
 
-![The failed bypass tests](images/detectmare-28.png)
+![The failed bypass tests](images/detectmare-12.png)
 
 The final rule no longer depends on the archiver's name. It requires a CAD extension in the command line plus either an archive file name or PowerShell's archive command, and it excludes the legitimate backup routine.
 
