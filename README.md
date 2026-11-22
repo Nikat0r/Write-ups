@@ -6,5 +6,6 @@ Hands-on security write-ups from my training. Each one covers the scenario, the 
 |---|---|---|
 | [Tempest](tryhackme/tempest/) | TryHackMe | Sysmon and Windows log analysis, Wireshark, full intrusion reconstruction |
 | [Boogeyman 1-3](tryhackme/boogeyman/) | TryHackMe | Email analysis, PowerShell logs, DNS exfiltration, memory forensics, ELK |
+| [DetectMare](tryhackme/detectmare/) | TryHackMe | Sigma rule tuning, Splunk (SPL), false-positive reduction, ATT&CK mapping |
 | [Fixit](tryhackme/fixit/) | TryHackMe | Splunk data onboarding, props/transforms/fields config, SPL |
 | [ShadowTrace](tryhackme/shadowtrace/) | TryHackMe | Static file triage, hashing, string extraction, IOCs |
