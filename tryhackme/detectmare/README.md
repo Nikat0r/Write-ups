@@ -66,15 +66,15 @@ The true positive was a different event from the report's samples: a proxy binar
 
 **ATT&CK:** T1003.001, LSASS Memory.
 
-![PR 3 in the detection-as-code app](images/detectmare-5.png)
+![PR 3 in the detection-as-code app](images/detectmare-05.png)
 
 The starting rule matched LSASS access through one dumping method. It scored 100% on the true and false positives but failed three bypass tests.
 
-![The failed bypass tests](images/detectmare-6.png)
+![The failed bypass tests](images/detectmare-06.png)
 
 The bypasses used other dumper modules and call traces from unknown memory. The fixes were adding the other debug-help module, matching an unknown frame in the call trace (code that is not backed by a normal module), tightening the error-reporting filter to its full path, and adding a filter for the institute's privileged-access agent. All tests then passed.
 
-![The event showing the LSASS dump](images/detectmare-7.png)
+![The event showing the LSASS dump](images/detectmare-07.png)
 
 **Takeaway:** a rule on one tool's artifact is the easiest to bypass. The unknown call trace catches injected or unsigned callers regardless of the tool.
 
@@ -82,11 +82,11 @@ The bypasses used other dumper modules and call traces from unknown memory. The 
 
 **ATT&CK:** T1550.002, Pass the Hash.
 
-![PR 4 in the detection-as-code app](images/detectmare-8.png)
+![PR 4 in the detection-as-code app](images/detectmare-08.png)
 
 A network logon with NTLM and a key length of zero is the fingerprint. On its own it scored 1 true positive, 7 false positives and 1 false negative, because other benign NTLM logons share it.
 
-![The pass-the-hash logon in Splunk](images/detectmare-9.png)
+![The pass-the-hash logon in Splunk](images/detectmare-09.png)
 
 My first idea was a correlation rule: a logon followed by a remote service installation on the same host. The grader would not score it, because it evaluates single events and does not run correlations. So I went back to an atomic rule that matches either event, with filters for the legitimate logons (a legacy workstation and a service account) in the environment document. One variant using a service that launches a command interpreter still failed.
 
