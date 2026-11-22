@@ -1,6 +1,8 @@
-# DetectMare
+# TryHackMe: DetectMare
 
-**TryHackMe, Detection Engineering.** Five Sigma rules tuned against a Splunk-backed detection-as-code pipeline, for an APT21-style intrusion that triggered no alerts.
+**Platform:** TryHackMe | **Path:** SOC Level 2 (Detection Engineering) | **Type:** Detection engineering / Sigma rule tuning
+
+> Spoilers (final rules, benign tool and service names) are hidden in collapsible blocks. Click to reveal. Flags and answer-field values are not included.
 
 ## Scenario
 
@@ -28,12 +30,6 @@ For every PR I did the same loop:
 ![PR 1 in the detection-as-code app](images/detectmare-02.png)
 
 A search for Office documents in the Splunk index found one that stood out, and the command line it launched showed a macro downloading a file with a living-off-the-land binary into the user's temp folder.
-
-<details>
-<summary>Spoiler: the lure document</summary>
-
-`Hypersonic_Test_Schedule_2025.docm`
-</details>
 
 **Version 1.** I added the commands from the report to the command-line matches and moved the Office telemetry agent from a selection to a filter. It failed several red-team tests.
 
@@ -80,12 +76,6 @@ The bypasses used other dumper modules and call traces from unknown memory. The 
 
 ![The event showing the LSASS dump](images/detectmare-15.png)
 
-<details>
-<summary>Spoiler: who ran the dump</summary>
-
-The Splunk search for the dumping DLL returned a single event with the account name. Add the answer here.
-</details>
-
 **Takeaway:** a rule on one tool's artifact is the easiest to bypass. The unknown call trace catches injected or unsigned callers regardless of the tool.
 
 ## PR 4: pass-the-hash lateral movement
@@ -117,12 +107,6 @@ I started with the two archivers' image names and a filter for the backup routin
 ![The failed bypass tests](images/detectmare-28.png)
 
 The final rule no longer depends on the archiver's name. It requires a CAD extension in the command line plus either an archive file name or PowerShell's archive command, and it excludes the legitimate backup routine.
-
-<details>
-<summary>Spoiler: the legitimate backup location</summary>
-
-The institute's backup tool archives the design shares into `d:\backups\nightly`.
-</details>
 
 **Takeaway:** if a tool can be renamed, don't make the rule depend on its name.
 
